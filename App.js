@@ -41,8 +41,11 @@ import  Process from './src/components/Process'
 import  Terms from './src/components/Terms'
 import  Privacy from './src/components/Privacy'
 import  About from './src/components/About'
-
-
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import authReducer from './src/reducers/authReducer';
+import thunk from 'redux-thunk';
+const store = createStore(authReducer, applyMiddleware(thunk));
 
  import Icon from 'react-native-vector-icons/MaterialIcons';
  import Icon1 from 'react-native-vector-icons/Fontisto';
@@ -123,12 +126,9 @@ const HomeScreenRouter = createDrawerNavigator(
 
 
 
-const App = createStackNavigator({
+const Stack = createStackNavigator({
   Splash: {
-    screen: Register,
-  },
-   Thanks: {
-    screen: Thanks,
+    screen: Splash,
   },
    Confirm : { screen: HomeScreenRouter
   },
@@ -198,7 +198,21 @@ const App = createStackNavigator({
 },
  { headerMode: 'none' });
 
-export default createAppContainer(App);
+
+export default class App extends Component {
+  componentDidMount = () => {
+    console.disableYellowBox = true;
+  }
+  render() {
+    const AppRouter = createAppContainer(Stack);
+
+    return (
+      <Provider store={store}>
+      <AppRouter/>
+      </Provider>
+    );
+  }
+}
 
 
 const styles = StyleSheet.create({

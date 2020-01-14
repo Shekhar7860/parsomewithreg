@@ -1,23 +1,31 @@
 import React, { Component} from 'react'
-import {View, Text, Image,TextInput, Alert, TouchableOpacity} from 'react-native'
+import {View, Text, Image,TextInput, Alert, TouchableOpacity, ImageBackground} from 'react-native'
 import styles from "../styles/styles";
 import Service from "../services/Service";
 // import { LoginManager,   AccessToken } from 'react-native-fbsdk';
 // import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
-export default class Login extends Component {
+import Spinner from 'react-native-loading-spinner-overlay';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as authaction from '../actions/authaction'
+//import { logindata } from '../actions/authaction';
+ class Login extends Component {
 
      constructor (props) {
     super (props)
     this.state = {
       mobile : "",
       password : "",
-      loading: false
+      email : "",
+      loading: false,
+       visible : false
     }
     service = new Service()
   }
 
 signUp = () => {
-  this.props.navigation.navigate('Register')
+  alert(JSON.stringify(this.props))
+  //this.props.navigation.navigate('Register')
 }
   componentDidMount = () => {
     // GoogleSignin.configure({
@@ -63,56 +71,37 @@ signUp = () => {
     }
 
 
-    signIn = async () => {
-      try {
-      //  await GoogleSignin.hasPlayServices();
-        const userInfo = await GoogleSignin.signIn();
-      alert(JSON.stringify(userInfo))
-      } catch (error) {
-        console.log(error, 'err')
-         this.props.navigation.navigate('Home2')
-        // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        //   // user cancelled the login flow
-        // } else if (error.code === statusCodes.IN_PROGRESS) {
-        //   // operation (e.g. sign in) is in progress already
-        // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        //   // play services not available or outdated
-        // } else {
-        //   // some other error happened
-        // }
-      }
-    };
+   
 
-    LoginFacebook = () => {
-      // Alert.alert("Logging With Facebook")
-      LoginManager.logInWithPermissions(["public_profile", "email"]).then(
-        result => {
-          console.log(result, 'res')
-          if (result.isCancelled) {
-            console.log("Login cancelled");
-          } else {
-            console.log(
-              "Login success with permissions: " +
-                result.grantedPermissions.toString()
-            );
-            AccessToken.getCurrentAccessToken().then(
-              (data) => {
-                    this.getUserProfile(data.accessToken);
-            });
-           
-          }
-        },
-        error => {
-          console.log("Login fail with error: " + error);
+    login = () => 
+    {
+   
+      
+       if ( service.validateEmail(this.state.email)) {
+         this.setState({visible : true})
+          service.login(this.state.email, this.state.password).then((res) => {
+            if(res.success == true) {
+          this.setState({visible : false})
+          alert(JSON.stringify(res))
+        
+          // this.props.actions.logindata(res)
+          // this.props.navigation.navigate('Home2')
+
         }
-      );
-    }
-
-    LoginGuest = () => {
-      this.props.navigation.navigate("Home2")
-    }
-    LoginGoogle = () => {
-      Alert.alert("Logging With Google")
+        else{
+            var data = {name : "shekhar", userId : 21}
+          service.saveUserData('user', data)
+           Alert.alert(res.message)
+            this.setState({visible : false})
+           this.props.actions.logindata(res)
+           this.props.navigation.navigate('Home2')
+        }
+                      })
+       }
+        else{
+          alert("please enter valid email")
+        }
+      
     }
 
     getUserProfile = (token) =>{ 
@@ -133,13 +122,18 @@ signUp = () => {
       this.props.navigation.goBack()
     }
 render () { 
-return (<View style={styles.container}>
-
+return (
+ 
+       
+        <View style={styles.container}>
+  <Spinner visible={this.state.visible} color='#8e44ad' tintColor='#8e44ad' animation={'fade'} cancelable={false} textStyle={{ color: '#FFF' }} />
    
-   <View style={{marginTop:120}}>
-    <TextInput value={this.state.mobile} onChangeText={(text)=>this.setState({ mobile:text})} style={styles.input} placeholder="UserName"  placeholderTextColor = "black" keyboardType='numeric' maxLength={10}></TextInput>
+   <View style={{marginTop:30}}>
+    <Image  style={styles.imageWidth} source={require('../images/ic_launcher.png')} ></Image>
+     <View style={{marginTop:20}}>
+    <TextInput value={this.state.email} onChangeText={(text)=>this.setState({ email:text})} style={styles.input} placeholder="Email"  placeholderTextColor = "black" keyboardType='default' ></TextInput>
     <TextInput value={this.state.password} style={styles.input} onChangeText={(text)=>this.setState({ password:text})} placeholder="Password"  placeholderTextColor = "black" secureTextEntry={true}></TextInput>
-     <TouchableOpacity style={styles.buttonBackground} onPress={this.goToPage.bind(this, 'Form')}>
+     <TouchableOpacity style={styles.buttonBackground} onPress={this.login.bind(this)}>
         <Text  style={styles.welcomeLoginText}>Login</Text>
         </TouchableOpacity>
           <Text style={styles.guestText} onPress={this.signUp.bind(this, 'Home2')}>Forgot Password? </Text>
@@ -147,9 +141,27 @@ return (<View style={styles.container}>
            <TouchableOpacity style={styles.buttonBackground2} onPress={this.signUp.bind(this, 'Register')}>
         <Text  style={styles.welcomeLoginText}>Register</Text>
         </TouchableOpacity>
+
+        </View>
           </View>
       
         
-        </View>)} 
+        </View>
+       )} 
       
 }
+
+function mapStateToProps(state, ownProps) {
+    return {
+        user: state
+    };
+  }
+
+ function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(authaction, dispatch)
+    };
+  }
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -78,23 +78,18 @@ validateEmail = (email) => {
 login = (email, password) => 
 {
  
-
    let formdata = new FormData();
 
-formdata.append("email", email)
-formdata.append("password", password)
-formdata.append("platform", "Android")
-formdata.append("token", "64663")
-formdata.append("longitude", "60.66")
-formdata.append("latitude", "40,4")
- return  fetch(apiUrl + '/Login',
+formdata.append("userEmail", email)
+formdata.append("userPassword", password)
+ return  fetch(apiUrl + 'api/login',
     {
       method: "POST",
       headers: {
-       "Accept": "application/json",
-       "Content-Type": "application/json"
+        "Accept": "application/json",
+        'Content-Type': 'multipart/form-data',
       },
-     body: JSON.stringify(data)
+     body: formdata
    }).then((response) => 
    response.json())
    .catch((error) => {
@@ -102,29 +97,7 @@ formdata.append("latitude", "40,4")
    });
 }
 
-loginOtp = (mobile, type, deviceToken, deviceId) => 
-{
-  var data = {
-    mobile: mobile,
-    device_token : deviceToken,
-    device_type : type,
-    device_id : deviceId
-   }
-   console.log(JSON.stringify(data));
-   return  fetch(constants.apiUrl + '/user/send-otp',
-    {
-      method: "POST",
-      headers: {
-       "Accept": "application/json",
-       "Content-Type": "application/json"
-      },
-     body: JSON.stringify(data)
-   }).then((response) => 
-   response.json())
-   .catch((error) => {
-     console.error(error);
-   });
-}
+
 
 register = (id, radio, email,   name, mobile, whatsappNumber, picker1, picker2, city, about) => 
 {
@@ -164,6 +137,38 @@ formdata.append("userAbout", about)
    });
 }
 
+saveLead = (id, name, contact, city, country, prefcountry, prefcollege, prefprogram, ielts, intake) => 
+{
+ console.log('refid', id, 'name', name,  'contact', contact, 'country', country, 'city', city, 'pref', prefcountry, 'prefcollege', prefcollege, 'prefprogram', prefprogram, 'ielts', ielts, 'intake', intake)
+
+ let formdata = new FormData();
+ formdata.append("userId", id)
+formdata.append("leadName", name)
+formdata.append("leadContact", contact)
+formdata.append("leadCity", city)
+formdata.append("leadCountry", country)
+formdata.append("leadPrefCountry", prefcountry)
+formdata.append("leadPrefCollege",  prefcollege)
+formdata.append("leadPrefProgram", prefprogram)
+formdata.append("leadielts", ielts)
+formdata.append("leadintake", intake)
+
+  
+ console.log(apiUrl + 'api/register', 'url;lll');
+   return  fetch(apiUrl + 'api/leadSave',
+    {
+      method: "POST",
+      headers: {
+       "Accept": "application/json",
+        'Content-Type': 'multipart/form-data',
+      },
+     body: formdata
+   }).then((response) => 
+     response.json())
+   .catch((error) => {
+     console.error(error, 'error');
+   });
+}
 verifyOtp = (mobile, otp, type) => 
 {
   var data = {
@@ -187,10 +192,10 @@ verifyOtp = (mobile, otp, type) =>
    });
 }
 
-getCategories = (token) => 
+getPosts = () => 
 {
-  console.log(apiUrl + `/Category`)
- return fetch(apiUrl + `/Category`,
+  console.log('https://theguestposting.com/parsome/api/allpost')
+ return fetch('https://theguestposting.com/parsome/api/allpost',
     {
       method: "GET"
    }).then((response) => 

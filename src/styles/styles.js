@@ -25,6 +25,28 @@ guestText : {
   fontSize : 16,
   marginTop : 20
 },
+ listCard:{
+        width:'100%',
+        backgroundColor:'#F0F0F0'
+      },
+      defaultTextSize:{
+    fontSize:20,
+    alignSelf:"center",
+    paddingTop: 10
+
+  },
+   listCardWidth : {
+        width: '100%',
+        marginTop: 0
+      },
+      freelancerlistCardWidth : {
+        width: '90%'
+        
+      },
+      listCenter:{
+        alignItems:'center',
+       // marginTop :2
+      },
  radioButton:
     {
         flexDirection: 'row',
@@ -196,7 +218,7 @@ sectionDimension : {
 },
 input : {
   marginTop:10,
-  width:'70%',
+  width:'80%',
   borderWidth:1,
   alignSelf:'center',
   height:40,
@@ -306,7 +328,7 @@ buttonBackground:{
  marginTop:10,
  alignSelf:'center',
   backgroundColor:'#8e44ad',
-  width:"70%",
+  width:"80%",
   borderRadius:25,
   height:40,
   alignItems:'center',
