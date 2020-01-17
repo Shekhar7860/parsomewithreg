@@ -102,7 +102,7 @@ if(this.props.navigation.state.params)
     service.getPosts().then((res) => {
     if(res.success == "true") {
       this.setState({visible : false})
-      alert(JSON.stringify(res))
+      //alert(JSON.stringify(res))
      this.setState({posts : res.result})
     }
         })

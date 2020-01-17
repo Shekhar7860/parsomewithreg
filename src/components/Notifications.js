@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, Text, View, TextInput, Image, ImageBackground, TouchableOpacity, StatusBar, ScrollView, TouchableNativeFeedback} from 'react-native';
+import {Platform, Text, View, Alert, TextInput, Image, ImageBackground, TouchableOpacity, StatusBar, ScrollView, TouchableNativeFeedback} from 'react-native';
 import styles from "../styles/styles";
 import Service from "../services/Service";
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -36,8 +36,10 @@ export default class Notifications extends Component {
 
   componentDidMount = () => {
     service.getUserData('user').then((keyValue) => {
-    // alert(JSON.stringify(keyValue))
-     this.setState({userId : keyValue.userId})
+    console.log('data',JSON.parse(keyValue))
+    var data = JSON.parse(keyValue);
+    console.log('data', data.userId)
+  this.setState({userId : data.userId})
    }, (error) => {
       console.log(error) //Display error
     });
@@ -45,11 +47,14 @@ export default class Notifications extends Component {
   }
 
    submit = () => {
+     console.log('userid', this.state.userId)
        if (this.state.name && this.state.email && this.state.mobile )
        {
-        // this.setState({visible : true})
+         this.setState({visible : true})
             service.saveLead(this.state.userId, this.state.name, this.state.email, this.state.mobile, this.state.country, this.state.prefcountry, this.state.prefcollege, this.state.prefprogram, this.state.ielts, this.state.intake).then((res) => {
-              alert(JSON.stringify(res))
+                 this.setState({visible : false})
+          Alert.alert(res.message)
+              this.props.navigation.navigate('Home')
         //     if(res.success == true) {
         //   this.setState({visible : false})
         //   Alert.alert(res.message)

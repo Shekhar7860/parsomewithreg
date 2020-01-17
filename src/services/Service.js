@@ -97,6 +97,28 @@ formdata.append("userPassword", password)
    });
 }
 
+getLead = (userId) => 
+{
+ 
+   let formdata = new FormData();
+
+formdata.append("userId", userId)
+ return  fetch(apiUrl + 'api/getlead',
+    {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        'Content-Type': 'multipart/form-data',
+      },
+     body: formdata
+   }).then((response) => 
+   response.json())
+   .catch((error) => {
+     console.error(error);
+   });
+}
+
+
 
 
 register = (id, radio, email,   name, mobile, whatsappNumber, picker1, picker2, city, about) => 

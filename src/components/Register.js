@@ -50,10 +50,11 @@ class Register extends Component {
     service = new Service();
   }
     goToPage = (page) => {
-       this.setState({visible : true})
+       
        
       if(this.state.picker1 !=="" && this.state.picker2 !== "")
       {
+        this.setState({visible : true})
        console.log('selectedItem', this.state.selectedItem, "picker1", this.state.picker1, "picker2", this.state.picker2)
        service.register(this.state.id, this.state.selectedItem, this.state.email,  this.state.name, this.state.mobile, this.state.whatsappNumber, this.state.picker1, this.state.picker2, this.state.city, this.state.about).then((res) => {
         console.log(res, 'resggggsgs')
@@ -64,9 +65,9 @@ class Register extends Component {
 
         }
         else{
-                this.setState({visible : false})
+         this.setState({visible : false})
 
-          Alert.alert("An Error Occured")
+          Alert.alert(res.message)
         }
        })
       }

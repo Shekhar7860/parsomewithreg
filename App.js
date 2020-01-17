@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react'
-import { createAppContainer} from 'react-navigation';
+import { createAppContainer, createSwitchNavigator} from 'react-navigation';
 import { createStackNavigator} from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -24,6 +24,7 @@ import SelectItems from './src/components/SelectItems'
 import Home from './src/components/Home'
 import Home2 from './src/components/Home2'
 import Details from './src/components/Details'
+import Service from "./src/services/Service";
 import Form from './src/components/Form'
 import Profile from './src/components/Profile'
 import SignUp from './src/components/SignUp'
@@ -197,14 +198,103 @@ const Stack = createStackNavigator({
   }
 },
  { headerMode: 'none' });
-
+ const Stack2 = createStackNavigator({
+  Splash: {
+    screen:  HomeScreenRouter,
+  },
+   Confirm : { screen: HomeScreenRouter
+  },
+  Welcome: {
+    screen: Welcome,
+  }, 
+  Form : {
+    screen: Form,
+  },
+    Leads : {
+    screen: Leads,
+  },
+   Partners : {
+    screen: Partners,
+  },
+   Volume : {
+    screen: Volume,
+  },
+   Referals : {
+    screen: Referals,
+  },
+   Targets : {
+    screen: Targets,
+  },
+   Bonus : {
+    screen: Bonus,
+  },
+   Tasks : {
+    screen: Tasks,
+  },
+   Deductions : {
+    screen: Deductions,
+  },
+   Company : {
+    screen: Company,
+  },
+   Details: {
+    screen: Details,
+  },
+  Login: {
+    screen: Login,
+  },
+  Register: {
+    screen: Register,
+  },
+  Select: {
+    screen: SelectItems,
+  },
+  Process: {
+    screen: Process,
+  },
+  Terms: {
+    screen: Terms,
+  },
+  Privacy: {
+    screen: Privacy,
+  },
+  About: {
+    screen: About,
+  },
+  Home: {
+    screen: Home,
+  },
+  Home2: {
+    screen: HomeScreenRouter,
+  }
+},
+ { headerMode: 'none' });
 
 export default class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = { 
+      signIn:false
+      
+    }
+     service = new Service()
+
+  }
   componentDidMount = () => {
     console.disableYellowBox = true;
+    service.getUserData('user').then((keyValue) => {
+      if (JSON.parse(keyValue) != null) {
+        this.setState({ signIn: true })
+      }
+      else {
+        this.setState({ signIn: false })
+      }
+     }, (error) => {
+        console.log(error) //Display error
+      });
   }
   render() {
-    const AppRouter = createAppContainer(Stack);
+    const AppRouter = createAppContainer(this.state.signIn ? Stack2 : Stack);
 
     return (
       <Provider store={store}>

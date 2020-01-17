@@ -24,8 +24,8 @@ import * as authaction from '../actions/authaction'
   }
 
 signUp = () => {
-  alert(JSON.stringify(this.props))
-  //this.props.navigation.navigate('Register')
+ // alert(JSON.stringify(this.props))
+  this.props.navigation.navigate('Register')
 }
   componentDidMount = () => {
     // GoogleSignin.configure({
@@ -80,21 +80,18 @@ signUp = () => {
        if ( service.validateEmail(this.state.email)) {
          this.setState({visible : true})
           service.login(this.state.email, this.state.password).then((res) => {
-            if(res.success == true) {
+            console.log(res, 'resssss')
+            if(res.success == "true") {
           this.setState({visible : false})
-          alert(JSON.stringify(res))
-        
+          service.saveUserData('user', res.result)
+          this.props.navigation.navigate('Home2')
           // this.props.actions.logindata(res)
           // this.props.navigation.navigate('Home2')
 
         }
         else{
-            var data = {name : "shekhar", userId : 21}
-          service.saveUserData('user', data)
-           Alert.alert(res.message)
-            this.setState({visible : false})
-           this.props.actions.logindata(res)
-           this.props.navigation.navigate('Home2')
+           Alert.alert("Wrong Email Or Password")
+           this.setState({visible : false})
         }
                       })
        }
